@@ -43,8 +43,9 @@ RUN mkdir -p /usr/src/logs
 
 COPY supervisord.conf /etc/supervisor/conf.d/
 COPY . /usr/src/app/.
-RUN cd /usr/src/app/ && python manage.py collectstatic
+RUN cd /usr/src/app/ && python manage.py makemigrations
 RUN cd /usr/src/app/ && python manage.py migrate
+RUN cd /usr/src/app/ && python manage.py collectstatic
 RUN cd /usr/src/app/ && python manage.py seeds
 RUN cd /usr/src/app/ && python manage.py test
 RUN echo user=root >>  /etc/supervisor/supervisord.conf
