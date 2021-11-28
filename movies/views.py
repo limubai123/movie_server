@@ -1,5 +1,5 @@
 from django.db.models import Subquery
-from rest_framework import generics, status, views
+from rest_framework import filters, generics, status, views
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -103,3 +103,5 @@ class PublicMoviesListAPI(generics.ListAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
     pagination_class = LimitOffsetPagination
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ["release_date", "upvote_count", "downvote_count"]

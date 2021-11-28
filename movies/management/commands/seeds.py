@@ -5,9 +5,9 @@ from movies.models import Genre
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        user = User.objects.create(username="admin")
-        user.set_password("12345")
-        user.save()
+        # user = User.objects.create(username="admin")
+        # user.set_password("12345")
+        # user.save()
         print("======user created=========")
 
         Genre.objects.create(name="Comedy")
