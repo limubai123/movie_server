@@ -1,9 +1,10 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from movies.views import (
     CreateGenreAPI,
     FevouriteGenreAPI,
     MovieAPI,
+    MovieDetailAPI,
     RecomendedMovieAPI,
     ReviewAPI,
     VoteAPI,
@@ -16,4 +17,5 @@ urlpatterns = [
     path("get_recomended_movie/", RecomendedMovieAPI.as_view()),
     path("review/", ReviewAPI.as_view()),
     path("vote/", VoteAPI.as_view()),
+    re_path(r"^movie_detail/(?P<pk>\d+)/$", MovieDetailAPI.as_view()),
 ]

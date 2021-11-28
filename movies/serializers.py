@@ -34,9 +34,14 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Review
-        fields = ("title", "description", "user__username")
+        fields = ("title", "description", "username", "created")
+
+    def get_username(self, obj):
+        return obj.user.username
 
 
 class VoteSerializer(serializers.ModelSerializer):
@@ -59,7 +64,8 @@ class VoteSerializer(serializers.ModelSerializer):
 
 
 class MovieDetailSerializer(serializers.ModelSerializer):
-    reviews = serializers.SerializerMethodField()
+    genre = CreateGenreSerializer(read_only=True, many=True)
+    reviews = ReviewDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -72,6 +78,3 @@ class MovieDetailSerializer(serializers.ModelSerializer):
             "downvote_count",
             "reviews",
         )
-
-    def get_reviews(self, obj):
-        return ReviewDetailSerializer(Review.objects.filter(movie=obj), many=True)

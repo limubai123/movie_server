@@ -7,6 +7,7 @@ from movies.models import Genre, Movie, Review, UserGenre, Vote
 from movies.serializers import (
     CreateGenreSerializer,
     FevouriteGenreSerializer,
+    MovieDetailSerializer,
     MovieSerializer,
     ReviewSerializer,
     VoteSerializer,
@@ -86,3 +87,9 @@ class VoteAPI(views.APIView):
             serilaizer.save()
             return Response(serilaizer.data, status=status.HTTP_201_CREATED)
         return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MovieDetailAPI(generics.RetrieveAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieDetailSerializer
+    permission_classes = (IsAuthenticated,)
