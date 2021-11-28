@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from movies.models import Genre, Movie, Review, UserGenre, Vote
+from movies.models import Genre, Movie, Review, Vote
 
 
 class CreateGenreSerializer(serializers.ModelSerializer):

@@ -4,7 +4,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from movies.models import Genre, Movie, Review, UserGenre, Vote
+from movies.models import Genre, Movie, Review, UserGenre
 from movies.serializers import (
     CreateGenreSerializer,
     FevouriteGenreSerializer,
