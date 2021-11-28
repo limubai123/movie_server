@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from movies.models import Genre, Movie, UserGenre
+from movies.models import Genre, Movie, Review, UserGenre
 
 
 class CreateGenreSerializer(serializers.ModelSerializer):
@@ -25,3 +25,34 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ("name", "genre", "release_date", "description")
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ("title", "description", "movie")
+
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ("title", "description", "user__username")
+
+
+class MovieDetailSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = (
+            "name",
+            "genre",
+            "release_date",
+            "description",
+            "upvote_count",
+            "downvote_count",
+            "reviews",
+        )
+
+    def get_reviews(self, obj):
+        return ReviewDetailSerializer(Review.objects.filter(movie=obj), many=True)

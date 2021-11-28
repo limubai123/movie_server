@@ -8,6 +8,7 @@ from movies.serializers import (
     CreateGenreSerializer,
     FevouriteGenreSerializer,
     MovieSerializer,
+    ReviewSerializer,
 )
 
 
@@ -55,3 +56,20 @@ class RecomendedMovieAPI(generics.ListAPIView):
     def get_queryset(self):
         user_genres = UserGenre.objects.filter(user=self.request.user)
         return Movie.objects.filter(genre__in=user_genres.values("genre__id")).distinct()
+
+
+class ReviewAPI(views.APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ReviewSerializer
+
+    def get(self, request, format=None):
+        reviews = Review.objects.filter(user=request.user)
+        serializer = self.serializer_class(reviews, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serilaizer = self.serializer_class(data=request.data)
+        if serilaizer.is_valid():
+            serilaizer.save(user=request.user)
+            return Response(serilaizer.data, status=status.HTTP_201_CREATED)
+        return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
