@@ -1,6 +1,7 @@
 from django.db.models import Subquery
 from rest_framework import generics, status, views
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from movies.models import Genre, Movie, Review, UserGenre, Vote
@@ -9,6 +10,7 @@ from movies.serializers import (
     FevouriteGenreSerializer,
     MovieDetailSerializer,
     MovieSerializer,
+    PublicMovieSerializer,
     ReviewSerializer,
     VoteSerializer,
 )
@@ -93,3 +95,11 @@ class MovieDetailAPI(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieDetailSerializer
     permission_classes = (IsAuthenticated,)
+
+
+class PublicMoviesListAPI(generics.ListAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = PublicMovieSerializer
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+    pagination_class = LimitOffsetPagination

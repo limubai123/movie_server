@@ -19,14 +19,6 @@ class FevouriteGenreSerializer(serializers.Serializer):
         return obj.genre.name
 
 
-class MovieSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Movie.objects.all())])
-
-    class Meta:
-        model = Movie
-        fields = ("name", "genre", "release_date", "description")
-
-
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -63,18 +55,26 @@ class VoteSerializer(serializers.ModelSerializer):
         return vote
 
 
-class MovieDetailSerializer(serializers.ModelSerializer):
-    genre = CreateGenreSerializer(read_only=True, many=True)
-    reviews = ReviewDetailSerializer(many=True, read_only=True)
+class MovieSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Movie.objects.all())])
 
     class Meta:
         model = Movie
-        fields = (
-            "name",
-            "genre",
-            "release_date",
-            "description",
+        fields = ("name", "genre", "release_date", "description")
+
+
+class PublicMovieSerializer(MovieSerializer):
+    genre = CreateGenreSerializer(read_only=True, many=True)
+
+    class Meta(MovieSerializer.Meta):
+        fields = MovieSerializer.Meta.fields + (
             "upvote_count",
             "downvote_count",
-            "reviews",
         )
+
+
+class MovieDetailSerializer(PublicMovieSerializer):
+    reviews = ReviewDetailSerializer(many=True, read_only=True)
+
+    class Meta(PublicMovieSerializer.Meta):
+        fields = PublicMovieSerializer.Meta.fields + ("reviews",)
