@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from movies.models import Genre
+from movies.models import Genre, UserGenre
 
 
 class CreateGenreSerializer(serializers.ModelSerializer):
@@ -11,9 +11,9 @@ class CreateGenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ("name",)
 
-    def create(self, validated_data):
-        genre = Genre.objects.create(
-            name=validated_data["name"],
-        )
 
-        return genre
+class FevouriteGenreSerializer(serializers.Serializer):
+    genre_name = serializers.SerializerMethodField()
+
+    def get_genre_name(self, obj):
+        return obj.genre.name

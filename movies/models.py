@@ -7,6 +7,11 @@ class Genre(AbstractBaseModel):
     name = models.CharField(max_length=250, null=False)
 
 
+class UserGenre(AbstractBaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, null=False)
+
+
 class Movie(AbstractBaseModel):
     """
     Movie Model
