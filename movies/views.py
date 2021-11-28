@@ -9,6 +9,7 @@ from movies.serializers import (
     FevouriteGenreSerializer,
     MovieSerializer,
     ReviewSerializer,
+    VoteSerializer,
 )
 
 
@@ -71,5 +72,17 @@ class ReviewAPI(views.APIView):
         serilaizer = self.serializer_class(data=request.data)
         if serilaizer.is_valid():
             serilaizer.save(user=request.user)
+            return Response(serilaizer.data, status=status.HTTP_201_CREATED)
+        return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VoteAPI(views.APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = VoteSerializer
+
+    def post(self, request, format=None):
+        serilaizer = self.serializer_class(data=request.data, context={"request": request})
+        if serilaizer.is_valid():
+            serilaizer.save()
             return Response(serilaizer.data, status=status.HTTP_201_CREATED)
         return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)

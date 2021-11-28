@@ -6,6 +6,7 @@ from movies.views import (
     MovieAPI,
     RecomendedMovieAPI,
     ReviewAPI,
+    VoteAPI,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("movie/", MovieAPI.as_view()),
     path("get_recomended_movie/", RecomendedMovieAPI.as_view()),
     path("review/", ReviewAPI.as_view()),
+    path("vote/", VoteAPI.as_view()),
 ]

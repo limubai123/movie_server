@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from movies.models import Genre, Movie, Review, UserGenre
+from movies.models import Genre, Movie, Review, UserGenre, Vote
 
 
 class CreateGenreSerializer(serializers.ModelSerializer):
@@ -37,6 +37,25 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ("title", "description", "user__username")
+
+
+class VoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vote
+        fields = ("vote_nature", "movie")
+
+    def create(self, validated_data):
+        vote = Vote.objects.filter(
+            movie=validated_data.get("movie"),
+            user=self.context.get("request").user,
+        ).first()
+
+        if not vote:
+            vote = Vote(movie=validated_data.get("movie"), user=self.context.get("request").user)
+
+        vote.vote_nature = validated_data.get("vote_nature")
+        vote.save()
+        return vote
 
 
 class MovieDetailSerializer(serializers.ModelSerializer):

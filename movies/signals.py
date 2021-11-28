@@ -5,15 +5,10 @@ from movies.models import Vote
 
 
 @receiver(pre_save, sender=Vote)
-def update_voting_count(sender, instance, created, **kwargs):
+def update_voting_count(sender, instance, **kwargs):
     movie_object = instance.movie
-    if created:
-        if instance.vote_nature == Vote.UP:
-            movie_object.upvote_count += 1
-        else:
-            movie_object.downvote_count += 1
-    else:
-        older_vote = Vote.objects.get(pk=instance.pk)
+    older_vote = Vote.objects.filter(user=instance.user, movie=instance.movie).first()
+    if older_vote:
         if older_vote.vote_nature != instance.vote_nature:
             if instance.vote_nature == Vote.UP:
                 movie_object.upvote_count += 1
@@ -23,4 +18,9 @@ def update_voting_count(sender, instance, created, **kwargs):
                 movie_object.upvote_count -= 1
         else:
             return
+    else:
+        if instance.vote_nature == Vote.UP:
+            movie_object.upvote_count += 1
+        else:
+            movie_object.downvote_count += 1
     movie_object.save()
